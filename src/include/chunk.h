@@ -1,3 +1,6 @@
+#ifndef CHUNK_H
+#define CHUNK_H
+
 #include <inttypes.h>
 
 typedef struct {
@@ -10,3 +13,5 @@ chunk_t new_chunk();
 void free_chunk(chunk_t *c);
 
 void write_chunk(chunk_t *c, uint8_t element);
+
+#endif

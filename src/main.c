@@ -1,15 +1,14 @@
 #include <stdio.h>
 
 #include "token.h"
-#include "lexer.h"
+#include "parser.h"
 
 int main(void) {
     char *source = "1.45 + 1.4";
-    lexer_t lexer = new_lexer(source);
+    parser_t parser = new_parser(source);
+    chunk_t chunk = parse(&parser);
 
-    for (token_t tk = next_token(&lexer); tk.type != TK_END; tk = next_token(&lexer)) {
-        printf("%.*s\n", tk.len, tk.pos);
-    }
+    free_chunk(&chunk);
 }
 
 static void repl() {

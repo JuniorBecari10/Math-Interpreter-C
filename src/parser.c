@@ -5,9 +5,10 @@
 parser_t new_parser(char *source) {
     return (parser_t) {
         .lexer = new_lexer(source),
+        .chunk = new_chunk(),
     };
 }
 
-void free_parser(parser_t *p) {
-    free_chunk(&p->chunk);
+chunk_t parse(parser_t *p) {
+
 }
