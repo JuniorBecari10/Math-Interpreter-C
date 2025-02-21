@@ -26,7 +26,4 @@ typedef struct {
     tokentype_t type;
 } token_t;
 
-token_t error_token(const char *message);
-token_t end_token();
-
 #endif

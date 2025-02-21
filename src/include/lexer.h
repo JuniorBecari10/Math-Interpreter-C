@@ -6,7 +6,10 @@
 
 typedef struct {
     char *source;
-    char *ptr;
+    
+    char *start;
+    char *current;
+
     uintptr_t len;
 } lexer_t;
 
