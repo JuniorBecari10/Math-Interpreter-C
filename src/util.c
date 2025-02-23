@@ -13,21 +13,24 @@ char *input(const char *prompt) {
 
     size_t size = INITIAL_SIZE;
     char *buffer = malloc(size);
-    if (!buffer) {
-        printf("Memory allocation failed\n");
+
+    if (buffer == NULL) {
+        printf("Memory allocation failed.\n");
         exit(1);
     }
 
+    // Read the stdin character by character until the first '\n', placing them in the heap,
+    // and reallocating the buffer if needed.
     size_t len = 0;
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {
-        if (len + 1 >= size) { // Resize if needed
+        if (len + 1 >= size) {
             size *= 2;
             char *new_buffer = realloc(buffer, size);
             
-            if (!new_buffer) {
+            if (new_buffer == NULL) {
                 free(buffer);
-                printf("Memory reallocation failed\n");
+                printf("Memory reallocation failed.\n");
                 exit(1);
             }
 
@@ -37,12 +40,17 @@ char *input(const char *prompt) {
         buffer[len++] = (char)c;
     }
 
-    buffer[len] = '\0'; // Null-terminate the string
+    buffer[len] = '\0';
     return buffer;
 }
 
 float64_t parse_f64(char *str, size_t len) {
     char *temp = malloc(len + 1);
+
+    if (temp == NULL) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
 
     memcpy(temp, str, len);
     temp[len] = '\0';
