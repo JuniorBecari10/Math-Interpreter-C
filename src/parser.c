@@ -126,6 +126,11 @@ static float64_t factor(parser_t *p) {
             return -operand;
         }
 
+        case TK_END: {
+            error(p->current.offset, "Unexpected end. Expected number or '-'.");
+            return NAN;
+        }
+
         default: {
             error(p->current.offset, "Unexpected token. Expected number or '-'.");
             return NAN;
