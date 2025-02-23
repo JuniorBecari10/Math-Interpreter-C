@@ -9,7 +9,7 @@
 typedef double float64_t;
 
 char *input(const char *prompt) {
-    printf("%s", prompt); // Print the prompt
+    printf("%s", prompt);
 
     size_t size = INITIAL_SIZE;
     char *buffer = malloc(size);
@@ -42,18 +42,21 @@ char *input(const char *prompt) {
 }
 
 float64_t parse_f64(char *str, size_t len) {
-    char temp[len + 1];
+    char *temp = malloc(len + 1);
 
     memcpy(temp, str, len);
     temp[len] = '\0';
 
-    return strtod(temp, NULL);
+    float64_t res = strtod(temp, NULL);
+
+    free(temp);
+    return res;
 }
 
 void pretty_print(float64_t num) {
     if (num == (int64_t)num) {
         printf("< %ld\n", (int64_t)num);
     } else {
-        printf("< %.2f\n", num);
+        printf("< %.15g\n", num);
     }
 }
