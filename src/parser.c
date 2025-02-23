@@ -89,7 +89,7 @@ static float64_t factor(parser_t *p) {
 
         case TK_MINUS: {
             advance(p); // '-'
-            float64_t operand = parse(p);
+            float64_t operand = factor(p);
 
             return -operand;
         }
