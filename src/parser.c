@@ -9,37 +9,7 @@
 #include <inttypes.h>
 #include <math.h>
 
-#define IS_OPERATOR(op) (((op) == TK_PLUS) || ((op) == TK_MINUS) || ((op) == TK_STAR) || ((op) == TK_SLASH) || ((op) == TK_END))
-
-#define EXPR(next_fn, tk_1, tk_2, op_1, op_2) \
-    do {\
-        float64_t res = next_fn(p);\
-        if (isnan(res)) return NAN;\
-\
-        token_t op = p->current;\
-        while (p->current.type == tk_1 || p->current.type == tk_2) {\
-            advance(p);\
-\
-            float64_t right = next_fn(p);\
-            if (isnan(right)) return NAN;\
-\
-            if (strcmp(#op_2, "/") == 0 && right == 0) {\
-                error(op.offset, "Cannot divide by zero.");\
-                return NAN;\
-            }\
-\
-            res = (op.type == tk_1)\
-                ? res op_1 right\
-                : res op_2 right;\
-        }\
-\
-        if (!IS_OPERATOR(op.type)) {\
-            error(op.offset, "Unknown operator.");\
-            return NAN;\
-        }\
-\
-        return res;\
-    } while (false)
+#define IS_OPERATOR(op) (((op) == TK_PLUS) || ((op) == TK_MINUS) || ((op) == TK_STAR) || ((op) == TK_SLASH) || ((op) == TK_END) || ((op) == TK_RPAREN))
 
 typedef double float64_t;
 
@@ -59,11 +29,67 @@ parser_t new_parser(char *source) {
 }
 
 float64_t parse(parser_t *p) {
-    EXPR(term, TK_PLUS, TK_MINUS, +, -);
+    float64_t result = term(p);
+
+    if (isnan(result))
+        return NAN;
+
+    while (p->current.type == TK_PLUS || p->current.type == TK_MINUS) {
+        token_t op = p->current;
+        advance(p);
+
+        float64_t right = term(p);
+
+        if (isnan(right))
+            return NAN;
+
+        if (op.type == TK_PLUS)
+            result += right;
+        else if (op.type == TK_MINUS)
+            result -= right;
+    }
+
+    if (!IS_OPERATOR(p->current.type)) {
+        error(p->current.offset, "Invalid operator. Expected one of these: (+ - * /)");
+        return NAN;
+    }
+
+    return result;
 }
 
 static float64_t term(parser_t *p) {
-    EXPR(factor, TK_STAR, TK_SLASH, *, /);
+    float64_t result = factor(p);
+
+    if (isnan(result))
+        return NAN;
+
+    while (p->current.type == TK_STAR || p->current.type == TK_SLASH) {
+        token_t op = p->current;
+        advance(p);
+
+        float64_t right = factor(p);
+
+        if (isnan(right))
+            return NAN;
+
+        if (op.type == TK_STAR)
+            result *= right;
+        else if (op.type == TK_SLASH) {
+            if (right == 0) {
+                error(op.offset, "Cannot divide by zero.");
+                return NAN;
+            }
+
+            result /= right;
+        }
+    }
+
+    if (!IS_OPERATOR(p->current.type)) {
+        error(p->current.offset, "Invalid operator. Expected one of these: ('+', '-', '*', '/').");
+        return NAN;
+    }
+
+    return result;
 }
 
 static float64_t factor(parser_t *p) {
@@ -79,6 +105,9 @@ static float64_t factor(parser_t *p) {
             advance(p); // '('
             float64_t inside = parse(p);
 
+            if (isnan(inside))
+                return NAN;
+
             if (!match(p, TK_RPAREN)) {
                 error(p->current.offset, "Missing ')' at end of expression.");
                 return NAN;
@@ -91,11 +120,14 @@ static float64_t factor(parser_t *p) {
             advance(p); // '-'
             float64_t operand = factor(p);
 
+            if (isnan(operand))
+                return NAN;
+
             return -operand;
         }
 
         default: {
-            error(p->current.offset, "Unknown token.");
+            error(p->current.offset, "Unexpected token. Expected number or '-'.");
             return NAN;
         }
     }

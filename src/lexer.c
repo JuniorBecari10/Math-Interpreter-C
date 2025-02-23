@@ -32,7 +32,7 @@ token_t next_token(lexer_t *l) {
     #define TOKEN(tk) return tk; break;
     
     switch (c) {
-        case '\0': TOKEN(end_token());
+        case '\0': TOKEN(end_token(l));
 
         case '+': TOKEN(new_token(l, TK_PLUS));
         case '-': TOKEN(new_token(l, TK_MINUS));
@@ -105,11 +105,11 @@ static token_t error_token(lexer_t *l, char *message) {
     };
 }
 
-static token_t end_token() {
+static token_t end_token(lexer_t *l) {
     return (token_t) {
-        .pos = NULL,
+        .pos = l->source + l->len,
         .len = 0,
-        .offset = 0,
+        .offset = l->len,
         .type = TK_END,
     };
 }
