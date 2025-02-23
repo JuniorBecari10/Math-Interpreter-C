@@ -153,8 +153,8 @@ static bool match(parser_t *p, tokentype_t type) {
 
 static void error(size_t offset, const char* message) {
     for (uint32_t i = 0; i < offset + 2; i++)
-        putc(' ', stdout);
+        putc(' ', stderr);
     
-    putc('^', stdout);
-    printf(" %s\n", message);
+    putc('^', stderr);
+    fprintf(stderr, " %s\n", message);
 }

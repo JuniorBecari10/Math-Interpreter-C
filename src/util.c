@@ -15,7 +15,7 @@ char *input(const char *prompt) {
     char *buffer = malloc(size);
 
     if (buffer == NULL) {
-        printf("Memory allocation failed.\n");
+        perror("Memory allocation failed");
         exit(1);
     }
 
@@ -30,7 +30,7 @@ char *input(const char *prompt) {
             
             if (new_buffer == NULL) {
                 free(buffer);
-                printf("Memory reallocation failed.\n");
+                perror("Memory reallocation failed");
                 exit(1);
             }
 
@@ -48,7 +48,7 @@ float64_t parse_f64(char *str, size_t len) {
     char *temp = malloc(len + 1);
 
     if (temp == NULL) {
-        printf("Memory allocation failed.\n");
+        perror("Memory allocation failed");
         exit(1);
     }
 
