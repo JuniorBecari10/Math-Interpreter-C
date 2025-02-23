@@ -1,7 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-#include <inttypes.h>
+#include <stddef.h>
 
 typedef enum {
     TK_NUMBER,
@@ -20,8 +20,8 @@ typedef enum {
 
 typedef struct {
     char *pos;
-    uint32_t len;
-    uint32_t offset;
+    size_t len;
+    size_t offset;
 
     tokentype_t type;
 } token_t;

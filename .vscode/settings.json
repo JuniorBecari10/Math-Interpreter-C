@@ -3,6 +3,8 @@
         "lexer.h": "c",
         "cstdlib": "c",
         "inttypes.h": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "parser.h": "c",
+        "token.h": "c"
     }
 }

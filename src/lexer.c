@@ -3,6 +3,7 @@
 
 #include <ctype.h>
 #include <string.h>
+#include <inttypes.h>
 
 static token_t number(lexer_t *l);
 static void skip_whitespace(lexer_t *l);
@@ -94,10 +95,11 @@ static token_t new_token(lexer_t *l, tokentype_t type) {
     };
 }
 
+// 'len' does not reflect the length of the message.
 static token_t error_token(lexer_t *l, char *message) {
     return (token_t) {
         .pos = message,
-        .len = strlen(message),
+        .len = 0,
         .offset = l->start - l->source,
         .type = TK_ERROR,
     };

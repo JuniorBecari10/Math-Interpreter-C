@@ -2,7 +2,7 @@
 #define LEXER_H
 
 #include "token.h"
-#include <inttypes.h>
+#include <stddef.h>
 
 typedef struct {
     char *source;
@@ -10,7 +10,7 @@ typedef struct {
     char *start;
     char *current;
 
-    uintptr_t len;
+    size_t len;
 } lexer_t;
 
 lexer_t new_lexer(char *source);
